@@ -1,0 +1,11 @@
+---
+- name: this play book is to unistall httpd package
+  hosts: all
+  become: true
+  tasks:
+
+  - name: removing httpd
+    service:
+      name: httpd
+      state: absent
+

@@ -1,0 +1,38 @@
+---
+- name: This playbook is to setup tomcat server
+  hosts: all
+  become: true
+  tasks:
+
+  - name: Insatalling java in Redhat machine
+    yum:
+      name: java
+      state: installed
+    when: ansible_os_family == "RedHat"
+
+  - name: Insatalling java in debian machine
+    apt:
+      name: defult-jdk
+      state: present
+    when: ansible_os_family == "Debian"
+
+  - name: Downloading tomcat from browser
+    get_url:
+      url: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.82/bin/apache-tomcat-9.0.82.tar.gz
+      dest: /opt
+      
+  - name: Extracting files from apache-tomcat-9.0.82.tar.gz
+    unarchive:
+      src: /opt/apache-tomcat-9.0.82.tar.gz
+      dest: /opt
+      remote_src: yes
+
+  - name: Executable permission
+    file:
+      path: /opt/apache-tomcat-9.0.82.tar.gz
+      mode: 0777
+
+  - name: starting the service
+    shell: nohup ./startup.sh
+    args:
+      chdir: /opt/apache-tomcat-9.0.82/bin
